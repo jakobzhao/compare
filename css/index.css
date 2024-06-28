@@ -1,0 +1,428 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Source Sans Pro", sans-serif;
+  /* font-family: 'Barlow Condensed', sans-serif; */
+}
+
+#before {
+  width: 50%;
+  height: 100vh;
+  float: left;
+  border-right: 0.1px solid gray;
+}
+
+#after {
+  width: 50%;
+  height: 100vh;
+  float: left;
+  border-left: 0.1px solid gray;
+}
+
+input,
+select {
+  cursor: pointer !important;
+}
+
+.maplibregl-ctrl-top-right {
+  top: 80px;
+}
+
+.map-overlay {
+  font: 12px/20px "Source Sans Pro", sans-serif;
+  position: absolute;
+  width: 245px;
+  top: 20;
+  left: 0;
+  padding: 10px;
+}
+
+.map-overlay .map-overlay-inner {
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.map-overlay h2 {
+  line-height: 24px;
+  display: block;
+  margin: 0 0 10px;
+}
+
+.map-overlay .legend .bar {
+  height: 10px;
+  width: 100%;
+  background: linear-gradient(to right, #fca107, #7f3121);
+}
+
+.map-overlay input {
+  background-color: transparent;
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  margin: 0;
+  cursor: ew-resize;
+}
+
+.map-overlay #causationButton,
+.map-overlay .dropdown-menu {
+  font-size: small;
+}
+#causationButton {
+  background-color: #ffffff;
+}
+
+.timeDay {
+  display: flex; /* 2. display flex to the rescue */
+  flex-direction: row;
+}
+
+.timeDay > input {
+  display: block; /* 1. oh noes, my inputs are styled as block... */
+  /* align-items: center; */
+  /* vertical-align: middle; */
+}
+
+.map-overlay input[type="radio"] {
+  height: 1em;
+  width: 20%;
+  /* align-items: center; */
+  vertical-align: middle;
+}
+
+.map-overlay-right {
+  font: 12px/20px "Source Sans Pro", sans-serif;
+  position: absolute;
+  width: 245px;
+  top: 20;
+  right: 0;
+  padding: 10px;
+}
+
+.map-overlay-right .map-overlay-inner {
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+
+.map-overlay-right h2 {
+  line-height: 24px;
+  display: block;
+  margin: 0 0 10px;
+}
+
+.map-overlay-right .legend .bar {
+  height: 10px;
+  width: 100%;
+  background: linear-gradient(to right, #fca107, #7f3121);
+}
+
+.map-overlay-right input {
+  background-color: transparent;
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  margin: 0;
+  cursor: ew-resize;
+}
+
+.timeDay > input {
+  display: block; /* 1. oh noes, my inputs are styled as block... */
+  /* align-items: center; */
+  /* vertical-align: middle; */
+}
+
+.map-overlay-right input[type="radio"] {
+  height: 1em;
+  width: 20%;
+  /* align-items: center; */
+  vertical-align: middle;
+}
+
+.map-overlay-bottom-right {
+  font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
+  position: absolute;
+  width: 245px;
+  bottom: 0;
+  right: 0;
+  padding: 10px;
+}
+
+.map-overlay-bottom-right .map-overlay-inner {
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.map-overlay-bottom-right h2 {
+  line-height: 24px;
+  display: block;
+  margin: 0 0 10px;
+}
+
+/* progress bar colors */
+#a-native-indian {
+  background-color: #d53e4f;
+}
+
+#a-asian {
+  background-color: #f46d43;
+}
+
+#a-black {
+  background-color: #fdae61;
+}
+
+#a-latino {
+  background-color: #fee08b;
+}
+
+#a-native-pacific {
+  background-color: #e6f598;
+}
+
+#a-white {
+  background-color: #abdda4;
+}
+
+#a-other {
+  background-color: #66c2a5;
+}
+
+.legend {
+  background-color: rgba(255, 255, 255, 0.75);
+  border-radius: 3px;
+  bottom: 30px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
+  padding: 10px;
+  position: absolute;
+  right: 10px;
+  z-index: 1;
+}
+
+.legend div span {
+  border-radius: 0%;
+  display: inline-block;
+  height: 20px;
+  margin: 0 1em 0.5em 0;
+  width: 20px;
+}
+
+.legend-row {
+  display: flex;
+}
+
+.labels {
+  margin-top: -6px;
+  margin-bottom: -4px;
+}
+
+#equity-matrix {
+  padding: 10px;
+}
+
+.scrollable-dropdown {
+  max-height: 200px; /* Set your desired max height */
+  overflow-y: auto;
+}
+
+input[type="checkbox"] {
+  width: 15px;
+  height: 15px; /* Optional: Set a specific height */
+  margin-right: 5px;
+}
+
+#monthInputs {
+  display: none;
+}
+
+.row {
+  height: 12px;
+  width: 90%;
+}
+
+.colors {
+  margin: 0 0 5px 0;
+}
+
+.label {
+  width: 25%;
+  display: inline-block;
+  text-align: center;
+}
+
+#time_of_day {
+  /* border: black 2px solid; */
+  height: 25px;
+}
+
+/* Style for the burger button */
+.burger-btn {
+  display: block;
+  position: absolute;
+  right: 0;
+  margin-right: 0.5em;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 10px;
+  transition: font-size 0.2s ease;
+}
+
+/* Style for left-menu button */
+.left-burger-btn {
+  display: block;
+  position: absolute;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 10px;
+  margin-left: 10em;
+  transition: font-size 0.2s ease;
+}
+
+/* Increase font size on hover */
+.burger-btn:hover {
+  font-size: 25px; /* Adjust the font size as needed */
+}
+
+.map-overlay-inner {
+  display: block;
+}
+
+#displayWhenCollapsed {
+  font-size: 25px;
+  font-weight: 200;
+  background: white;
+  opacity: 0.7;
+  padding: 20px;
+  display: none;
+}
+
+.subheadline {
+  font-weight: bold;
+}
+
+#yearLabel,
+#monthAllCheck {
+  font-weight: normal;
+}
+
+/* welcome model and loader */
+
+/* it was made from this online tool: https://loading.io/animation/icon/ */
+#loader {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  bottom: 0;
+  z-index: 999;
+  background: url("../img/loading-logo.gif") 50% 50% no-repeat
+    rgba(255, 255, 255, 0.5);
+  opacity: 1;
+}
+
+/* welcome panel */
+
+.map-window {
+  --bs-modal-bg: rgba(255, 255, 255, 0.85);
+  /* --bs-modal-header-border-color: rgba(158, 153, 153, 0.205);
+  --bs-modal-footer-border-color: rgba(158, 153, 153, 0.205); */
+  /* color: #dddddd; */
+}
+
+.map-window-content {
+  font-size: small;
+}
+
+.map-window-content > img {
+  float: right;
+  width: 200px;
+  /* margin: 0px */
+}
+
+/* .map-window-content, */
+.modal-title,
+#nextTimeLabel {
+  font-family: "Barlow Condensed", sans-serif;
+  /* color: #dddddd; */
+}
+
+.modal {
+  /* background-color: rgba(255, 255, 255, 0.85); */
+}
+
+#nextTimeSwitcher {
+  font-size: medium;
+}
+
+#sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+/* dropdown */
+
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  border-left: 0;
+  background: rgb(0 0 0 / 10%);
+}
+
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0d6efd;
+  border-radius: 0;
+}
+
+#tooltip {
+  position: absolute;
+  top: 0.75em;
+  right: 250px;
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
+  z-index: 1000; /* Ensure it's above other elements */
+  font-size: small;
+  width: 200px;
+}
+
+.em_factor {
+  cursor: pointer;
+}
+
+#landuse-legend,
+#uas-legend {
+  display: none;
+}
+
+.landuse-legend-color {
+  width: 10px;
+  height: 10px;
+  border: 1px solid #000; /* Optional: Add a border for better visibility */
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-left: 20%;
+}
+
+#outage-legend {
+  margin-bottom: 2em;
+}
+#outage-type-label {
+  margin-top: 1em;
+}

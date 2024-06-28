@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCL GIS Mapping Hub</title>
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <!-- google font -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,800" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Sorts+Mill+Goudy:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500&display=swap" rel="stylesheet">
+
+    <link href="https://unpkg.com/maplibre-gl@2.1.6/dist/maplibre-gl.css" rel='stylesheet' />
+    <link href="css/maplibre-gl-compare.css" rel='stylesheet' />
+
+    <script src="https://unpkg.com/maplibre-gl@2.1.6/dist/maplibre-gl.js"></script>
+    <script src="js/maplibre-gl-compare.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <!-- bootstrap -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <!-- chromajs -->
+    <script src="js/chroma.min.js">
+    </script>
+
+    <!-- plotly -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-statistics/7.0.0/simple-statistics.min.js"></script>
+
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+
+</head>
+
+<body>
+
+
+    <!-- LOADER -->
+    <div id="loader"></div>
+    <!-- Welcome Panel -->
+    <div id="welcome" class="modal fade map-window modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Welcome to your Project!</h5>
+                </div>
+                <div class="modal-body map-window-content">
+                    <p>
+                        the content of the welcome panel.
+                    </p>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="form-switch" id="nextTimeSwitcher">
+                        <input class="form-check-input" type="checkbox">
+                    </div>
+                    <label id="nextTimeLabel">Don't show this welcome panel again.</label>
+
+                    <button id="welcome-close" type="button" class="btn btn-primary py-1"
+                        data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="before" class="map"></div>
+    <div id="after" class="map"></div>
+
+    <div class="map-overlay top">
+        <div id="time-panel" class="map-overlay-inner">
+            <div class="subheadline">Outlines:</div>
+            <div>
+                <input type="radio" id="c_tract" name="city_outlines" value="ct" checked />
+                <label for="c_tract">Census Tract</label>
+            </div>
+            <div>
+                <input type="radio" id="city_council" name="city_outlines" value="cc" />
+                <label for="city_council">City Council</label>
+            </div>
+            <div>
+                <input type="radio" id="neighborhood" name="city_outlines" value="nh" />
+                <label for="neigborhood">Neighborhoods</label>
+            </div>
+            <div>
+                <input type="radio" id="landuse" name="city_outlines" value="lu" />
+                <label for="landuse">Residential vs. Commerical</label>
+                <div id="landuse-legend" class="ms-3">
+                    <div class="legend-item">
+                        <div class="landuse-legend-color" style="background-color: #B1C381;"></div>
+                        <div class="legend-description">Residential</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="landuse-legend-color" style="background-color: #F79489;"></div>
+                        <div class="legend-description">Commercial</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="landuse-legend-color" style="background-color: #EEC759;"></div>
+                        <div class="legend-description">Mixed</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="landuse-legend-color" style="background-color: #ffffff;"></div>
+                        <div class="legend-description">Others</div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <input type="radio" id="wireless_priority_area" name="city_outlines" value="wpa" />
+                <label for="wireless_priority_area">Wireless Priority Area</label>
+            </div>
+            <div>
+                <input type="radio" id="uas" name="city_outlines" value="uas" />
+                <label for="uas">Underground Area Status</label>
+                <div id="uas-legend" class="ms-3">
+                    <div class="legend-item">
+                        <div class="landuse-legend-color" style="background-color: #91cf60"></div>
+                        <div class="legend-description">Completed</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="landuse-legend-color" style="background-color: #d73027"></div>
+                        <div class="legend-description">High Priority</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="landuse-legend-color" style="background-color: #fc8d59"></div>
+                        <div class="legend-description">Medium Priority</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="landuse-legend-color" style="background-color: #fee08b"></div>
+                        <div class="legend-description">Low Priority</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="map-overlay-right top">
+        <div id="displayWhenCollapsed"></div>
+        <div id="equity-matrix" class="map-overlay-inner">
+            <div>
+                <b>Environment Factors</b>
+                <div>
+                    <input type="radio" id="ehd" name="population_category" value="1" checked />
+                    <label for="ehd" class="em_factor">Environ. Health Disparity</label>
+                </div>
+                <div>
+                    <input type="radio" id="traffic-volume" name="population_category" value="2" />
+                    <label for="traffic-volume" class="em_factor">Traffic Proximity & Volume</label>
+                </div>
+                <div>
+                    <input type="radio" id="waste-proximity" name="population_category" value="3" />
+                    <label for="waste-proximity" class="em_factor">Hazardous Site Proximity</label>
+                </div>
+                <div>
+                    <input type="radio" id="n-risk-index" name="population_category" value="4" />
+                    <label for="n-risk-index" class="em_factor">Natural Hazards Risk Index</label>
+                </div>
+                <div>
+                    <input type="radio" id="ti" name="population_category" value="5" />
+                    <label for="ti" class="em_factor">Transportation Insecurity</label>
+                </div>
+            </div>
+            <div>
+                <b>Socialeconomic Factors</b>
+                <div>
+                    <input type="radio" id="svi" name="population_category" value="6" />
+                    <label for="svi" class="em_factor">Social Vulnerability</label>
+                </div>
+                <div>
+                    <input type="radio" id="sef" name="population_category" value="7" />
+                    <label for="sef" class="em_factor">Socioeconomic Factor</label>
+                </div>
+                <div>
+                    <input type="radio" id="housing-burden" name="population_category" value="8" />
+                    <label for="housing-burden" class="em_factor">Housing Burden (%)</label>
+                </div>
+                <div>
+                    <input type="radio" id="english-learner" name="population_category" value="9" />
+                    <label for="english-learner" class="em_factor">English Learner</label>
+                </div>
+                <div>
+                    <input type="radio" id="poc" name="population_category" value="10" />
+                    <label for="poc" class="em_factor">Persons of Color</label>
+                </div>
+            </div>
+            <div>
+                <b>Health Factors</b>
+                <div>
+                    <input type="radio" id="air-quality" name="population_category" value="11" />
+                    <label for="air-quality" class="em_factor">PM 2.5 in the Air</label>
+                </div>
+                <div>
+                    <input type="radio" id="dpe" name="population_category" value="12" />
+                    <label for="dpe" class="em_factor">Diesel Particulate Exposure</label>
+                </div>
+                <div>
+                    <input type="radio" id="disability" name="population_category" value="13" />
+                    <label for="disability" class="em_factor">% Disability</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tooltip" style="display: none;">Tooltip content</div>
+    <div class="map-overlay-bottom-right bottom">
+        <div id="tract-info" class="map-overlay-inner">
+            <h6>Tract Information</h6>
+            <div>
+                <label class="fw-bold">Census Tract:</label>
+                <span id="c-tract-name"></span>
+            </div>
+            <div>
+                <label class="fw-bold">Population:</label>
+                <span id="population"> </span>
+            </div>
+            <div>
+                <label class="fw-bold">Life Expectancy:</label>
+                <span id="life-expectancy"></span>
+            </div>
+            <div>
+                <label class="fw-bold">Households:</label>
+                <span id="households"></span>
+            </div>
+            <label class="fw-bold">Population by Race:</label>
+            <div class="progress" style="height: 10px">
+                <div id="a-native-indian" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
+                </div>
+                <div id="a-asian" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
+                </div>
+                <div id="a-black" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
+                </div>
+                <div id="a-latino" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
+                </div>
+                <div id="a-native-pacific" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
+                </div>
+                <div id="a-white" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
+                </div>
+                <div id="a-other" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Burger Button for right map -->
+    <div class="burger-btn" onclick="toggleOverlay()">☰</div>
+    <div class="left-burger-btn" onclick="toggleLeftOverlay()">☰</div>
+</body>
+<script src="js/misc.js"></script>
+
+<script src="js/map.js"></script>
+
+</html>

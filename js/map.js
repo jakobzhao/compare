@@ -1,5 +1,5 @@
 var leftMap = new maplibregl.Map({
-  container: "before",
+  container: "left",
   style: "data/style.json",
   bounds: [
     [-71.191421, 42.22788], // Southwest corner of Boston metropolitan area
@@ -12,7 +12,7 @@ var leftMap = new maplibregl.Map({
 // the bounds for seattle city is [-122.335167, 47.608013], [-122.224433, 47.734145]
 
 var rightMap = new maplibregl.Map({
-  container: "after",
+  container: "right",
   style: "data/style.json",
   bounds: [
     [-71.191421, 42.22788], // Southwest corner of Boston metropolitan area

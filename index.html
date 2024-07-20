@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCL GIS Mapping Hub</title>
+    <title>Massachusetts PFAS Influence Map</title>
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
     <!-- google font -->
@@ -40,7 +40,6 @@
 
 <body>
 
-
     <!-- LOADER -->
     <div id="loader"></div>
     <!-- Welcome Panel -->
@@ -73,19 +72,27 @@
 
     <div class="map-overlay top">
         <div id="time-panel" class="map-overlay-inner">
-            <div class="subheadline">Outlines:</div>
+            <div class="subheadline">PFAS datasets:</div>
+
             <div>
                 <input type="radio" id="c_tract" name="city_outlines" value="ct" checked />
-                <label for="c_tract">Census Tract</label>
+                <label for="c_tract">PFAS Above</label>
             </div>
             <div>
                 <input type="radio" id="city_council" name="city_outlines" value="cc" />
-                <label for="city_council">City Council</label>
+                <label for="city_council">PFAS Below</label>
             </div>
             <div>
                 <input type="radio" id="neighborhood" name="city_outlines" value="nh" />
-                <label for="neigborhood">Neighborhoods</label>
+                <label for="neigborhood">PFOS</label>
             </div>
+            <div>
+                <input type="radio" id="neighborhood" name="city_outlines" value="nh" />
+                <label for="neigborhood">PFOA</label>
+            </div>
+
+
+
             <div>
                 <input type="radio" id="landuse" name="city_outlines" value="lu" />
                 <label for="landuse">Residential vs. Commerical</label>
@@ -108,10 +115,7 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <input type="radio" id="wireless_priority_area" name="city_outlines" value="wpa" />
-                <label for="wireless_priority_area">Wireless Priority Area</label>
-            </div>
+
             <div>
                 <input type="radio" id="uas" name="city_outlines" value="uas" />
                 <label for="uas">Underground Area Status</label>
@@ -142,108 +146,22 @@
         <div id="displayWhenCollapsed"></div>
         <div id="equity-matrix" class="map-overlay-inner">
             <div>
-                <b>Environment Factors</b>
+                <b>Social Equality Factors</b>
                 <div>
                     <input type="radio" id="ehd" name="population_category" value="1" checked />
-                    <label for="ehd" class="em_factor">Environ. Health Disparity</label>
+                    <label for="ehd" class="em_factor">Schools</label>
                 </div>
                 <div>
                     <input type="radio" id="traffic-volume" name="population_category" value="2" />
-                    <label for="traffic-volume" class="em_factor">Traffic Proximity & Volume</label>
+                    <label for="traffic-volume" class="em_factor">Household Median Income</label>
                 </div>
-                <div>
-                    <input type="radio" id="waste-proximity" name="population_category" value="3" />
-                    <label for="waste-proximity" class="em_factor">Hazardous Site Proximity</label>
-                </div>
-                <div>
-                    <input type="radio" id="n-risk-index" name="population_category" value="4" />
-                    <label for="n-risk-index" class="em_factor">Natural Hazards Risk Index</label>
-                </div>
-                <div>
-                    <input type="radio" id="ti" name="population_category" value="5" />
-                    <label for="ti" class="em_factor">Transportation Insecurity</label>
-                </div>
+
             </div>
-            <div>
-                <b>Socialeconomic Factors</b>
-                <div>
-                    <input type="radio" id="svi" name="population_category" value="6" />
-                    <label for="svi" class="em_factor">Social Vulnerability</label>
-                </div>
-                <div>
-                    <input type="radio" id="sef" name="population_category" value="7" />
-                    <label for="sef" class="em_factor">Socioeconomic Factor</label>
-                </div>
-                <div>
-                    <input type="radio" id="housing-burden" name="population_category" value="8" />
-                    <label for="housing-burden" class="em_factor">Housing Burden (%)</label>
-                </div>
-                <div>
-                    <input type="radio" id="english-learner" name="population_category" value="9" />
-                    <label for="english-learner" class="em_factor">English Learner</label>
-                </div>
-                <div>
-                    <input type="radio" id="poc" name="population_category" value="10" />
-                    <label for="poc" class="em_factor">Persons of Color</label>
-                </div>
-            </div>
-            <div>
-                <b>Health Factors</b>
-                <div>
-                    <input type="radio" id="air-quality" name="population_category" value="11" />
-                    <label for="air-quality" class="em_factor">PM 2.5 in the Air</label>
-                </div>
-                <div>
-                    <input type="radio" id="dpe" name="population_category" value="12" />
-                    <label for="dpe" class="em_factor">Diesel Particulate Exposure</label>
-                </div>
-                <div>
-                    <input type="radio" id="disability" name="population_category" value="13" />
-                    <label for="disability" class="em_factor">% Disability</label>
-                </div>
-            </div>
+
+
         </div>
     </div>
     <div id="tooltip" style="display: none;">Tooltip content</div>
-    <div class="map-overlay-bottom-right bottom">
-        <div id="tract-info" class="map-overlay-inner">
-            <h6>Tract Information</h6>
-            <div>
-                <label class="fw-bold">Census Tract:</label>
-                <span id="c-tract-name"></span>
-            </div>
-            <div>
-                <label class="fw-bold">Population:</label>
-                <span id="population"> </span>
-            </div>
-            <div>
-                <label class="fw-bold">Life Expectancy:</label>
-                <span id="life-expectancy"></span>
-            </div>
-            <div>
-                <label class="fw-bold">Households:</label>
-                <span id="households"></span>
-            </div>
-            <label class="fw-bold">Population by Race:</label>
-            <div class="progress" style="height: 10px">
-                <div id="a-native-indian" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
-                </div>
-                <div id="a-asian" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
-                </div>
-                <div id="a-black" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
-                </div>
-                <div id="a-latino" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
-                </div>
-                <div id="a-native-pacific" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
-                </div>
-                <div id="a-white" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
-                </div>
-                <div id="a-other" class="progress-bar" data-bs-toggle="tooltip" data-bs-placement="top">
-                </div>
-            </div>
-        </div>
-
-    </div>
 
     <!-- Burger Button for right map -->
     <div class="burger-btn" onclick="toggleOverlay()">☰</div>

@@ -25,53 +25,32 @@ var rightMap = new maplibregl.Map({
 
 // Data Sources
 leftMap.on("load", () => {
-  // Add a geojson point source.
-  // Heatmap layers also work with a vector tile source.
-  leftMap.addSource("outage_loc", {
+  // Add a geojson sources.
+  leftMap.addSource("pfoa_zipcode", {
     type: "geojson",
-    data: "data/outage_condensed_2023.geojson",
+    data: "./data/merged_PFOA_ma_zipcodes.geojson",
   });
 
-  leftMap.addSource("censusTract", {
+  leftMap.addSource("pfos_zipcode", {
     type: "geojson",
-    data: "data/c_tract_2020_seattle.geojson",
+    data: "./data/merged_PFOS_ma_zipcodes.geojson",
   });
 
-  leftMap.addSource("cc_districts", {
+  leftMap.addSource("pfas_above_pnt", {
     type: "geojson",
-    data: "data/seattle_city_council_districts.geojson",
+    data: "./data/sdwis_17MAY2024_above.geojson",
   });
 
-  leftMap.addSource("neighborhoods_outline", {
+  leftMap.addSource("pfas_below_pnt", {
     type: "geojson",
-    data: "data/SCL_neighborhood_data.geojson",
-  });
-
-  leftMap.addSource("wireless_priority_area", {
-    type: "geojson",
-    data: "data/WirelessPriorityAreas.geojson",
-  });
-
-  leftMap.addSource("landuse", {
-    type: "geojson",
-    data: "data/landuse_20231209.geojson",
-  });
-
-  leftMap.addSource("ua_status", {
-    type: "geojson",
-    data: "data/ug_status.geojson",
-  });
-
-  leftMap.addSource("svi20_data", {
-    type: "geojson",
-    data: "data/svi_20_seattle_new.geojson",
+    data: "./data/sdwis_17MAY2024_below.geojson",
   });
 
   leftMap.addLayer(
     {
-      id: "co_line_layer",
+      id: "pfoa_zipcode_layer",
       type: "line",
-      source: "censusTract",
+      source: "pfoa_zipcode",
       paint: {
         "line-opacity": 0.4,
         "line-color": "gray",
@@ -82,35 +61,51 @@ leftMap.on("load", () => {
 
   leftMap.addLayer(
     {
-      id: "co_fill",
-      type: "fill",
-      source: "censusTract",
+      id: "pfos_zipcode_layer",
+      type: "line",
+      source: "pfos_zipcode",
       paint: {
-        "fill-color": "white",
-        "fill-opacity": 0,
+        "line-opacity": 0.4,
+        "line-color": "gray",
       },
     },
     "watername_ocean"
   );
 
-  leftMap.addLayer(
-    {
-      id: "svi_data",
-      type: "fill",
-      source: "svi20_data",
-      paint: {
-        // "fill-color": "white",
-        "fill-opacity": 0,
-      },
+  leftMap.addLayer({
+    id: "pfas_above_pnt_layer",
+    type: "circle",
+    source: "pfas_above_pnt",
+    paint: {
+      "circle-radius": 5,
+      "circle-stroke-width": 0.5,
+      "circle-stroke-color": "gray",
+      "circle-stroke-opacity": 0.8,
+      "circle-opacity": 0.8,
+      "circle-color": "red",
     },
-    "watername_ocean"
-  );
+  });
+
+  leftMap.addLayer({
+    id: "pfas_below_pnt_layer",
+    type: "circle",
+    source: "pfas_below_pnt",
+    paint: {
+      "circle-radius": 5,
+      "circle-stroke-width": 0.5,
+      "circle-stroke-color": "gray",
+      "circle-stroke-opacity": 0.8,
+      "circle-opacity": 0.8,
+      "circle-color": "green",
+    },
+  });
 
   // Initialize the heatmap layer with the default year
-  addHeatmapLayer(2023, "all", "sum");
+  // addHeatmapLayer(2023, "all", "sum");
 
   // Initialized heatmap legend
   // heatmap colorscale
+
   let colorScale = [
     "rgb(33, 102, 172)",
     "rgb(103, 169, 207)",
@@ -119,184 +114,6 @@ leftMap.on("load", () => {
     "rgb(239, 138, 98)",
     "rgb(178, 24, 43)",
   ];
-  addOutageTypeLegend(colorScale, "frequency");
-
-  let yearSlider = document.getElementById("yearSlider");
-  let monthSlider = document.getElementById("monthSlider");
-  let radioButtons = document.getElementsByName("outage_type");
-  let monthsCheckbox = document.getElementById("all_months");
-  let monthInputs = document.getElementById("monthInputs");
-
-  // Add event listeners for slider changes
-  yearSlider.addEventListener("input", function () {
-    updateYearLabel();
-    // check if all months or not
-    if (monthsCheckbox.checked) {
-      updateHeatmapLayer(yearSlider.value, "all", outageType(radioButtons));
-    } else {
-      updateHeatmapLayer(
-        yearSlider.value,
-        monthSlider.value,
-        outageType(radioButtons)
-      );
-    }
-    // update other filters too
-    updateFilter();
-  });
-
-  monthSlider.addEventListener("input", function () {
-    let monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    let monthLabel = document.getElementById("monthLabel");
-    monthLabel.innerHTML = monthNames[monthSlider.value - 1];
-    updateHeatmapLayer(
-      yearSlider.value,
-      monthSlider.value,
-      outageType(radioButtons)
-    );
-
-    updateFilter();
-  });
-
-  // show all months
-  monthsCheckbox.addEventListener("change", function () {
-    // if checked, disable the rest, and update year data
-    if (monthsCheckbox.checked) {
-      monthSlider.disabled = true;
-      monthInputs.style.display = "none";
-      updateHeatmapLayer(yearSlider.value, "all", outageType(radioButtons));
-    } else {
-      monthSlider.disabled = false;
-      monthInputs.style.display = "block";
-      updateHeatmapLayer(
-        yearSlider.value,
-        monthSlider.value,
-        outageType(radioButtons)
-      );
-    }
-
-    updateFilter();
-  });
-
-  // Add event listeners for outage type (feature or duration changes)
-  radioButtons.forEach(function (radioButton) {
-    radioButton.addEventListener("change", function () {
-      // remove legend
-      let existingLegend = document.getElementById("outage-legend");
-      if (existingLegend) {
-        existingLegend.parentNode.removeChild(existingLegend);
-      }
-      let selectedProperty = this.value;
-      if (monthsCheckbox.checked) {
-        updateHeatmapLayer(yearSlider.value, "all", selectedProperty);
-      } else {
-        updateHeatmapLayer(
-          yearSlider.value,
-          monthSlider.value,
-          selectedProperty
-        );
-      }
-      updateFilter();
-
-      if (selectedProperty == "duration") {
-        colorScale = [
-          "#ffffff",
-          "#ffffb2",
-          "#fecc5c",
-          "#fd8d3c",
-          "#f03b20",
-          "#bd0026",
-        ];
-        addOutageTypeLegend(colorScale, "duration");
-      } else {
-        // switch back to frequency colorscale
-        colorScale = [
-          "rgb(33, 102, 172)",
-          "rgb(103, 169, 207)",
-          "rgb(209, 229, 240)",
-          "rgb(253, 219, 199)",
-          "rgb(239, 138, 98)",
-          "rgb(178, 24, 43)",
-        ];
-        addOutageTypeLegend(colorScale, "frequency");
-      }
-      // create legend for frequency/duration here
-    });
-  });
-
-  // get time=_of_day
-  let timeOfDayButtons = document.getElementsByName("time_of_day");
-  timeOfDayButtons.forEach(function (button) {
-    button.addEventListener("change", function () {
-      if (this.value == "all") {
-        leftMap.setFilter("outage_heatmap", [
-          "!=",
-          ["get", "time_of_day"],
-          this.value,
-        ]);
-        leftMap.setFilter("outage_point", [
-          "!=",
-          ["get", "time_of_day"],
-          this.value,
-        ]);
-      } else {
-        leftMap.setFilter("outage_heatmap", [
-          "==",
-          ["get", "time_of_day"],
-          this.value,
-        ]);
-        leftMap.setFilter("outage_point", [
-          "==",
-          ["get", "time_of_day"],
-          this.value,
-        ]);
-      }
-    });
-  });
-
-  // get causation
-  let causations = document.querySelectorAll(".dropdown-item");
-  causations.forEach(function (causation) {
-    causation.addEventListener("click", function () {
-      let selectedIndex = parseInt(this.getAttribute("data-index"));
-      if (selectedIndex != 1) {
-        leftMap.setFilter("outage_heatmap", [
-          "==",
-          ["at", selectedIndex - 2, ["array", ["get", "causation"]]],
-          "1",
-        ]);
-        leftMap.setFilter("outage_point", [
-          "==",
-          ["at", selectedIndex - 2, ["array", ["get", "causation"]]],
-          "1",
-        ]);
-      } else {
-        leftMap.setFilter("outage_heatmap", [
-          "!=",
-          ["at", 0, ["array", ["get", "causation"]]],
-          "1",
-        ]);
-        leftMap.setFilter("outage_point", [
-          "!=",
-          ["at", 0, ["array", ["get", "causation"]]],
-          "1",
-        ]);
-      }
-    });
-  });
 
   // outline of city districts
   outlineOptions();
@@ -308,21 +125,41 @@ leftMap.on("load", () => {
   displayServicePointInfo();
 
   // organize layer z-index and which ones go on top of each other
-  leftMap.moveLayer("co_line_layer", "outage_heatmap");
+  // leftMap.moveLayer("co_line_layer", "outage_heatmap");
 });
 
 // map containing equity matrix and all other data
 rightMap.on("load", () => {
-  rightMap.addSource("svi20_data", {
+  // Add a geojson sources.
+  rightMap.addSource("schools", {
     type: "geojson",
-    data: "data/svi_20_seattle_new.geojson",
+    data: "./data/mak12schools.geojson",
+  });
+
+  rightMap.addSource("census", {
+    type: "geojson",
+    data: "./data/ma_census_tract_median_income-merged.geojson",
+  });
+
+  rightMap.addLayer({
+    id: "schools_layer",
+    type: "circle",
+    source: "schools",
+    paint: {
+      "circle-radius": 5,
+      "circle-stroke-width": 0.5,
+      "circle-stroke-color": "gray",
+      "circle-stroke-opacity": 0.8,
+      "circle-opacity": 0.8,
+      "circle-color": "blue",
+    },
   });
 
   rightMap.addLayer(
     {
-      id: "svi_lines",
+      id: "census_layer",
       type: "line",
-      source: "svi20_data",
+      source: "census",
       paint: {
         "line-opacity": 0.3,
         "line-color": "black",
@@ -334,14 +171,14 @@ rightMap.on("load", () => {
   // initiate
   let colorScale = chroma.scale("OrRd").colors(4);
   let legendValues = [10, 9, 6, 1];
-  plotMap("svi20_data", "env_health_disparity_rank", [
-    [1, colorScale[0]],
-    [6, colorScale[1]],
-    [9, colorScale[2]],
-    [10, colorScale[3]],
-  ]);
+  // plotMap("svi20_data", "env_health_disparity_rank", [
+  //   [1, colorScale[0]],
+  //   [6, colorScale[1]],
+  //   [9, colorScale[2]],
+  //   [10, colorScale[3]],
+  // ]);
   updateLegendValues(legendValues, colorScale);
-  justiceOptions();
+  // justiceOptions();
 });
 
 rightMap.on("click", "options_layer", (e) => {
@@ -375,158 +212,6 @@ leftMap.on("mousemove", "outage_point", (e) => {
 leftMap.on("mouseleave", "outage_point", (e) => {
   leftMap.getCanvas().style.cursor = "";
 });
-
-// function
-function justiceOptions() {
-  let radioButtons = document.getElementsByName("population_category");
-  radioButtons.forEach(function (radioButton) {
-    radioButton.addEventListener("change", function () {
-      removeColorLegend();
-      let selectedProperty = this.value;
-      if (selectedProperty == 1) {
-        let colorScale = chroma.scale("OrRd").colors(4);
-        plotMap("svi20_data", "env_health_disparity_rank", [
-          [1, colorScale[0]],
-          [5, colorScale[1]],
-          [8, colorScale[2]],
-          [10, colorScale[3]],
-        ]);
-        let legendValues = [10, 8, 5, 1];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 2) {
-        let colorScale = chroma.scale("PuBu").colors(4);
-        // let features = rightMap.querySourceFeatures('svi20_data');
-        // var propertyValues = features.map(function (feature) {
-        //   return feature.properties["Traffic.proximity.and.volume"];
-        // });
-        // var breaks = ss.equalIntervalBreaks(propertyValues, 3);
-        plotMap("svi20_data", "Traffic.proximity.and.volume", [
-          [50, colorScale[0]],
-          [1000, colorScale[1]],
-          [2000, colorScale[2]],
-          [14000, colorScale[3]],
-        ]);
-
-        let legendValues = ["14K+", "2K", "1K", "50"];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 3) {
-        let colorScale = chroma.scale("Oranges").colors(4);
-        plotMap("svi20_data", "Proximity.to.hazardous.waste.sites", [
-          [0.5, colorScale[0]],
-          [5, colorScale[1]],
-          [10, colorScale[2]],
-          [25, colorScale[3]],
-        ]);
-        let legendValues = [25, 10, 5, 0.5];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 4) {
-        let colorScale = chroma.scale("Reds").colors(4);
-        plotMap(
-          "svi20_data",
-          "Expected.population.loss.rate..Natural.Hazards.Risk.Index.",
-          [
-            [0.002, colorScale[0]],
-            [0.003, colorScale[1]],
-            [0.005, colorScale[2]],
-            [0.015, colorScale[3]],
-          ]
-        );
-        let legendValues = [0.015, 0.005, 0.003, 0.002];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 5) {
-        let colorScale = chroma.scale("Greens").colors(4);
-        plotMap("svi20_data", "housing_transit", [
-          [0.05, colorScale[0]],
-          [0.6, colorScale[1]],
-          [0.8, colorScale[2]],
-          [1.0, colorScale[3]],
-        ]);
-        let legendValues = [1.0, 0.8, 0.6, 0.05];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 6) {
-        let colorScale = chroma.scale("GnBu").colors(4);
-        plotMap("svi20_data", "svi", [
-          [0.01, colorScale[0]],
-          [0.4, colorScale[1]],
-          [0.6, colorScale[2]],
-          [1.0, colorScale[3]],
-        ]);
-        let legendValues = [1.0, 0.6, 0.4, 0.01];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 7) {
-        let colorScale = chroma.scale("BuPu").colors(4);
-        plotMap("svi20_data", "sef_rank", [
-          [1, colorScale[0]],
-          [2, colorScale[1]],
-          [5, colorScale[2]],
-          [10, colorScale[3]],
-        ]);
-        let legendValues = ["10", "6", "2", "1"];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 8) {
-        let colorScale = chroma.scale("BuGn").colors(4);
-        plotMap("svi20_data", "Housing.burden..percent.", [
-          [5, colorScale[0]],
-          [20, colorScale[1]],
-          [30, colorScale[2]],
-          [100, colorScale[3]],
-        ]);
-        let legendValues = [100, 30, 20, 5];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 9) {
-        let colorScale = chroma.scale("Blues").colors(4);
-        plotMap("svi20_data", "Linguistic.isolation..percent.", [
-          [0, colorScale[0]],
-          [1, colorScale[1]],
-          [5, colorScale[2]],
-          [35, colorScale[3]],
-        ]);
-        let legendValues = [35.0, 5.0, 1.0, 0.0];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 10) {
-        let colorScale = chroma.scale("PuRd").colors(4);
-        plotMap("svi20_data", "Percent.Black.or.African.American.alone", [
-          [0, colorScale[0]],
-          [0.01, colorScale[1]],
-          [0.1, colorScale[2]],
-          [0.5, colorScale[3]],
-        ]);
-        let legendValues = ["0.5", "0.1", "0.01", "0"];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 11) {
-        let colorScale = chroma.scale("Purples").colors(4);
-        plotMap("svi20_data", "PM2.5.in.the.air", [
-          [7.4, colorScale[0]],
-          [7.6, colorScale[1]],
-          [7.8, colorScale[2]],
-          [7.9, colorScale[3]],
-        ]);
-        let legendValues = [7.9, 7.8, 7.6, 7.4];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 12) {
-        let colorScale = chroma.scale("YlGn").colors(4);
-        plotMap("svi20_data", "Diesel.particulate.matter.exposure", [
-          [0.4, colorScale[0]],
-          [0.5, colorScale[1]],
-          [0.75, colorScale[2]],
-          [1.0, colorScale[3]],
-        ]);
-        let legendValues = ["1.0", "0.75", "0.5", "0.4"];
-        updateLegendValues(legendValues, colorScale);
-      } else if (selectedProperty == 13) {
-        let colorScale = chroma.scale("YlOrBr").colors(4);
-        plotMap("svi20_data", "%_disability", [
-          [4, colorScale[0]],
-          [7, colorScale[1]],
-          [10, colorScale[2]],
-          [30, colorScale[3]],
-        ]);
-        let legendValues = [30, 10, 7, 4];
-        updateLegendValues(legendValues, colorScale);
-      }
-    });
-  });
-}
 
 function plotMap(source, property, breaks) {
   if (!(source in rightMap.style.sourceCaches)) {

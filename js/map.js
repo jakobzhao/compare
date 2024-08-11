@@ -7,6 +7,7 @@ var leftMap = new maplibregl.Map({
   ],
   attributionControl: false,
   minZoom: 7,
+  maxZoom: 20,
 });
 
 // the bounds for seattle city is [-122.335167, 47.608013], [-122.224433, 47.734145]
@@ -19,6 +20,7 @@ var rightMap = new maplibregl.Map({
     [-70.748802, 42.707681], // Northeast corner of Boston metropolitan area
   ],
   minZoom: 7,
+  maxZoom: 15,
   customAttribution:
     "<a href='#' target='_blank'>Your copyright acknowledgement</a>",
 });
@@ -142,16 +144,56 @@ rightMap.on("load", () => {
   });
 
   rightMap.addLayer({
-    id: "schools_layer",
+    id: "school-heat",
+    type: "heatmap",
+    source: "schools",
+    maxzoom: 12,
+    paint: {
+      // Increase the heatmap weight based on frequency and property magnitude
+      // Increase the heatmap color weight weight by zoom level
+      // heatmap-intensity is a multiplier on top of heatmap-weight
+      "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 1, 12, 3],
+      // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+      // Begin color ramp at 0-stop with a 0-transparency color
+      // to create a blur-like effect.
+      "heatmap-color": [
+        "interpolate",
+        ["linear"],
+        ["heatmap-density"],
+        0,
+        "rgba(33,102,172,0)",
+        0.2,
+        "rgb(103,169,207)",
+        0.4,
+        "rgb(209,229,240)",
+        0.6,
+        "rgb(253,219,199)",
+        0.8,
+        "rgb(239,138,98)",
+        1,
+        "rgb(178,24,43)",
+      ],
+      // Adjust the heatmap radius by zoom level
+      "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 4, 12, 20],
+      // Transition from heatmap to circle layer by zoom level
+      "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 5, 1, 12, 0],
+    },
+  });
+
+  rightMap.addLayer({
+    id: "school-point",
     type: "circle",
     source: "schools",
+    minzoom: 10,
     paint: {
+      // Size circle radius by earthquake magnitude and zoom level
       "circle-radius": 5,
-      "circle-stroke-width": 0.5,
-      "circle-stroke-color": "gray",
-      "circle-stroke-opacity": 0.8,
-      "circle-opacity": 0.8,
+      // Color circle by earthquake magnitude
       "circle-color": "blue",
+      "circle-stroke-color": "white",
+      "circle-stroke-width": 1,
+      // Transition from heatmap to circle layer by zoom level
+      "circle-opacity": ["interpolate", ["linear"], ["zoom"], 10, 0, 14, 1],
     },
   });
 
@@ -162,11 +204,54 @@ rightMap.on("load", () => {
       source: "census",
       paint: {
         "line-opacity": 0.3,
-        "line-color": "black",
+        "line-width": 1.5,
+        "line-color": "gray",
       },
     },
-    "watername_ocean"
+    "waterway"
   );
+
+  let colorScale2 = chroma.scale("OrRd").colors(4);
+  // let legendValues = [10, 9, 6, 1];
+  plotMap("census", "Median_Household_Income", [
+    [60000, colorScale2[0]],
+    [100000, colorScale2[1]],
+    [150000, colorScale2[2]],
+    [250000, colorScale2[3]],
+  ]);
+  // updateLegendValues(legendValues, colorScale);
+
+  function plotMap(source, property, breaks) {
+    if (!(source in rightMap.style.sourceCaches)) {
+      console.log("Could not find proper source.");
+    }
+    if (rightMap.getLayer("options_layer")) {
+      rightMap.removeLayer("options_layer");
+    }
+
+    // Add following layer with indicated source & property
+    rightMap.addLayer(
+      {
+        id: "options_layer",
+        type: "fill",
+        source: source,
+        paint: {
+          "fill-color": {
+            property: property,
+            stops: breaks,
+            default: "gray",
+          },
+          "fill-opacity": [
+            "case",
+            ["!=", ["get", property], null], // If property is not null
+            0.4, // Use the default fill-opacity
+            0.7, // If property is null, use a different fill-opacity
+          ],
+        },
+      },
+      "waterway"
+    );
+  }
 
   // initiate
   let colorScale = chroma.scale("OrRd").colors(4);

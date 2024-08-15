@@ -32,11 +32,11 @@ function setupLegend(legendId, radioButtonId, legendColorClass) {
   });
 }
 
-// Usage for landuse legend
-setupLegend("landuse-legend", "landuse", "landuse-legend-color");
+// // Usage for landuse legend
+// setupLegend("landuse-legend", "landuse", "landuse-legend-color");
 
-// Usage for uas legend
-setupLegend("uas-legend", "uas", "uas-legend-color");
+// // Usage for uas legend
+// setupLegend("uas-legend", "uas", "uas-legend-color");
 
 // window on ready
 $(window).ready(function () {

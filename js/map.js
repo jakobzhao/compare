@@ -28,56 +28,21 @@ var rightMap = new maplibregl.Map({
 // Data Sources
 leftMap.on("load", () => {
   // Add a geojson sources.
-  leftMap.addSource("pfoa_zipcode", {
+
+  leftMap.addSource("pfos_pnt", {
     type: "geojson",
-    data: "./data/merged_PFOA_ma_zipcodes.geojson",
+    data: "./data/PFOS_MA_PNTS.geojson",
   });
 
-  leftMap.addSource("pfos_zipcode", {
+  leftMap.addSource("pfoa_pnt", {
     type: "geojson",
-    data: "./data/merged_PFOS_ma_zipcodes.geojson",
+    data: "./data/PFOA_MA_PNTS.geojson",
   });
-
-  leftMap.addSource("pfas_above_pnt", {
-    type: "geojson",
-    data: "./data/sdwis_17MAY2024_above.geojson",
-  });
-
-  leftMap.addSource("pfas_below_pnt", {
-    type: "geojson",
-    data: "./data/sdwis_17MAY2024_below.geojson",
-  });
-
-  leftMap.addLayer(
-    {
-      id: "pfoa_zipcode_layer",
-      type: "line",
-      source: "pfoa_zipcode",
-      paint: {
-        "line-opacity": 0.4,
-        "line-color": "gray",
-      },
-    },
-    "watername_ocean"
-  );
-
-  leftMap.addLayer(
-    {
-      id: "pfos_zipcode_layer",
-      type: "line",
-      source: "pfos_zipcode",
-      paint: {
-        "line-opacity": 0.4,
-        "line-color": "gray",
-      },
-    },
-    "watername_ocean"
-  );
 
   leftMap.addLayer({
-    id: "pfas_above_pnt_layer",
+    id: "pfos_pnt_layer",
     type: "circle",
-    source: "pfas_above_pnt",
+    source: "pfos_pnt",
     paint: {
       "circle-radius": 5,
       "circle-stroke-width": 0.5,
@@ -89,16 +54,16 @@ leftMap.on("load", () => {
   });
 
   leftMap.addLayer({
-    id: "pfas_below_pnt_layer",
+    id: "pfoa_pnt_layer",
     type: "circle",
-    source: "pfas_below_pnt",
+    source: "pfoa_pnt",
     paint: {
       "circle-radius": 5,
       "circle-stroke-width": 0.5,
       "circle-stroke-color": "gray",
       "circle-stroke-opacity": 0.8,
       "circle-opacity": 0.8,
-      "circle-color": "green",
+      "circle-color": "orange",
     },
   });
 
@@ -144,43 +109,6 @@ rightMap.on("load", () => {
   });
 
   rightMap.addLayer({
-    id: "school-heat",
-    type: "heatmap",
-    source: "schools",
-    maxzoom: 12,
-    paint: {
-      // Increase the heatmap weight based on frequency and property magnitude
-      // Increase the heatmap color weight weight by zoom level
-      // heatmap-intensity is a multiplier on top of heatmap-weight
-      "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 1, 12, 3],
-      // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-      // Begin color ramp at 0-stop with a 0-transparency color
-      // to create a blur-like effect.
-      "heatmap-color": [
-        "interpolate",
-        ["linear"],
-        ["heatmap-density"],
-        0,
-        "rgba(33,102,172,0)",
-        0.2,
-        "rgb(103,169,207)",
-        0.4,
-        "rgb(209,229,240)",
-        0.6,
-        "rgb(253,219,199)",
-        0.8,
-        "rgb(239,138,98)",
-        1,
-        "rgb(178,24,43)",
-      ],
-      // Adjust the heatmap radius by zoom level
-      "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 4, 12, 20],
-      // Transition from heatmap to circle layer by zoom level
-      "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 5, 1, 12, 0],
-    },
-  });
-
-  rightMap.addLayer({
     id: "school-point",
     type: "circle",
     source: "schools",
@@ -188,12 +116,11 @@ rightMap.on("load", () => {
     paint: {
       // Size circle radius by earthquake magnitude and zoom level
       "circle-radius": 5,
-      // Color circle by earthquake magnitude
       "circle-color": "blue",
       "circle-stroke-color": "white",
-      "circle-stroke-width": 1,
+      "circle-stroke-width": 0.6,
       // Transition from heatmap to circle layer by zoom level
-      "circle-opacity": ["interpolate", ["linear"], ["zoom"], 10, 0, 14, 1],
+      "circle-opacity": ["interpolate", ["linear"], ["zoom"], 10, 0.3, 14, 1],
     },
   });
 

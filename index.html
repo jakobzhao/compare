@@ -72,99 +72,47 @@
 
     <div class="map-overlay top">
         <div id="time-panel" class="map-overlay-inner">
-            <div class="subheadline">PFAS datasets:</div>
-
+            <h3>Massachusetts PFAS Influence Map</h3>
+            <div class="subheadline">PFAS compounds:</div>
             <div>
-                <input type="radio" id="c_tract" name="city_outlines" value="ct" checked />
-                <label for="c_tract">PFAS Above</label>
+                <label for="pfas">PFOS</label>
             </div>
             <div>
-                <input type="radio" id="city_council" name="city_outlines" value="cc" />
-                <label for="city_council">PFAS Below</label>
+                <label for="pfas">PFOA</label>
+            </div>
+
+            <div class="subheadline">Social Factors:</div>
+            <div>
+                <label for="social" class="em_factor">Schools</label>
             </div>
             <div>
-                <input type="radio" id="neighborhood" name="city_outlines" value="nh" />
-                <label for="neigborhood">PFOS</label>
+                <label for="social" class="em_factor">Household Median Income</label>
             </div>
-            <div>
-                <input type="radio" id="neighborhood" name="city_outlines" value="nh" />
-                <label for="neigborhood">PFOA</label>
+            <div id="legend-color-bar" class="row colors ms-3"
+                style="background: linear-gradient(to right, rgb(255, 247, 236), rgb(253, 195, 141), rgb(231, 83, 58), rgb(127, 0, 0));">
             </div>
-
-
-
-            <div>
-                <input type="radio" id="landuse" name="city_outlines" value="lu" />
-                <label for="landuse">Residential vs. Commerical</label>
-                <div id="landuse-legend" class="ms-3">
-                    <div class="legend-item">
-                        <div class="landuse-legend-color" style="background-color: #B1C381;"></div>
-                        <div class="legend-description">Residential</div>
-                    </div>
-                    <div class="legend-item">
-                        <div class="landuse-legend-color" style="background-color: #F79489;"></div>
-                        <div class="legend-description">Commercial</div>
-                    </div>
-                    <div class="legend-item">
-                        <div class="landuse-legend-color" style="background-color: #EEC759;"></div>
-                        <div class="legend-description">Mixed</div>
-                    </div>
-                    <div class="legend-item">
-                        <div class="landuse-legend-color" style="background-color: #ffffff;"></div>
-                        <div class="legend-description">Others</div>
-                    </div>
-                </div>
+            <div id="label-equity-matrix" class="labels ms-1">
+                <div class="label">1</div>
+                <div class="label">6</div>
+                <div class="label">9</div>
+                <!-- <div class="label">10</div> -->
             </div>
 
-            <div>
-                <input type="radio" id="uas" name="city_outlines" value="uas" />
-                <label for="uas">Underground Area Status</label>
-                <div id="uas-legend" class="ms-3">
-                    <div class="legend-item">
-                        <div class="landuse-legend-color" style="background-color: #91cf60"></div>
-                        <div class="legend-description">Completed</div>
-                    </div>
-                    <div class="legend-item">
-                        <div class="landuse-legend-color" style="background-color: #d73027"></div>
-                        <div class="legend-description">High Priority</div>
-                    </div>
-                    <div class="legend-item">
-                        <div class="landuse-legend-color" style="background-color: #fc8d59"></div>
-                        <div class="legend-description">Medium Priority</div>
-                    </div>
-                    <div class="legend-item">
-                        <div class="landuse-legend-color" style="background-color: #fee08b"></div>
-                        <div class="legend-description">Low Priority</div>
-                    </div>
-                </div>
-            </div>
 
+            <div style=" display: flex;justify-content: flex-end;">
+                <p class="info"> <span>instruction</span><span>about me</span></p>
+            </div>
         </div>
     </div>
 
-    <div class="map-overlay-right top">
-        <div id="displayWhenCollapsed"></div>
-        <div id="equity-matrix" class="map-overlay-inner">
-            <div>
-                <b>Social Equality Factors</b>
-                <div>
-                    <input type="radio" id="ehd" name="population_category" value="1" checked />
-                    <label for="ehd" class="em_factor">Schools</label>
-                </div>
-                <div>
-                    <input type="radio" id="traffic-volume" name="population_category" value="2" />
-                    <label for="traffic-volume" class="em_factor">Household Median Income</label>
-                </div>
-
-            </div>
-
-
-        </div>
     </div>
+
+
+
     <div id="tooltip" style="display: none;">Tooltip content</div>
 
     <!-- Burger Button for right map -->
-    <div class="burger-btn" onclick="toggleOverlay()">☰</div>
+    <!-- <div class="burger-btn" onclick="toggleOverlay()">☰</div> -->
     <div class="left-burger-btn" onclick="toggleLeftOverlay()">☰</div>
 </body>
 <script src="js/misc.js"></script>

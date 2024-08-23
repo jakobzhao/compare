@@ -21,8 +21,7 @@ var rightMap = new maplibregl.Map({
   ],
   minZoom: 7,
   maxZoom: 15,
-  customAttribution:
-    "<a href='#' target='_blank'>Your copyright acknowledgement</a>",
+  customAttribution: "<a href='#' target='_blank'>Alice Hu</a>",
 });
 
 // Data Sources
@@ -82,14 +81,14 @@ leftMap.on("load", () => {
     "rgb(178, 24, 43)",
   ];
 
-  // outline of city districts
-  outlineOptions();
+  // // outline of city districts
+  // outlineOptions();
 
-  // add tooltip for cliked feature
-  displayAreaInformation();
+  // // add tooltip for cliked feature
+  // displayAreaInformation();
 
-  // adding popup for cliked point
-  displayServicePointInfo();
+  // // adding popup for cliked point
+  // displayServicePointInfo();
 
   // organize layer z-index and which ones go on top of each other
   // leftMap.moveLayer("co_line_layer", "outage_heatmap");
@@ -247,6 +246,33 @@ rightMap.on("load", () => {
   // ]);
   updateLegendValues(legendValues, colorScale);
   // justiceOptions();
+});
+const rightPopup = new maplibregl.Popup({
+  closeButton: false,
+  closeOnClick: false,
+});
+rightMap.on("click", "school-point", (e) => {
+  const coordinates = e.features[0].geometry.coordinates.slice();
+  const description = e.features[0].properties.NAME;
+
+  // Ensure that if the map is zoomed out such that multiple
+  // copies of the feature are visible, the popup appears
+  // over the copy being pointed to.
+  while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+  }
+
+  rightPopup.setLngLat(coordinates).setHTML(description).addTo(rightMap);
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+rightMap.on("mouseenter", "school-point", () => {
+  rightMap.getCanvas().style.cursor = "pointer";
+});
+
+// Change it back to a pointer when it leaves.
+rightMap.on("mouseleave", "school-point", () => {
+  rightMap.getCanvas().style.cursor = "";
 });
 
 rightMap.on("click", "options_layer", (e) => {

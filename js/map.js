@@ -93,9 +93,23 @@ leftMap.on("load", () => {
 
   // When a click event occurs on a feature in the places layer, open a popup at the
   // location of the feature, with description HTML from its properties.
+
   leftMap.on("click", "pfos_pnt_layer", (e) => {
     const coordinates = e.features[0].geometry.coordinates.slice();
-    const description = e.features[0].properties.PC_NAME;
+    const properties = e.features[0].properties;
+
+    const description = `
+        <strong>PWSID:</strong> ${properties.PWSID}<br>
+        <strong>Zipcode:</strong> ${properties.ZIPCODE}<br>
+        <strong>Town:</strong> ${properties.CITY_TOWN}<br>
+        <strong>State:</strong> ${properties.State} <br>
+        <strong>PWS (Public Water System):</strong> ${properties.PWSName}<br>
+        <strong>Facility Name:</strong> ${properties.FacilityName}<br>
+        <strong>Water Type Tested:</strong> ${properties.FacilityWaterType}<br>
+        <strong>Collection Date:</strong> ${properties.CollectionDate}<br>
+        <strong>Contaminant:</strong> PFOS <br>
+        <strong>Analytical Result Value:</strong> ${properties.AnalyticalResultValue} ug/L
+    `;
 
     // Ensure that if the map is zoomed out such that multiple
     // copies of the feature are visible, the popup appears
@@ -122,7 +136,20 @@ leftMap.on("load", () => {
 
   leftMap.on("click", "pfoa_pnt_layer", (e) => {
     const coordinates = e.features[0].geometry.coordinates.slice();
-    const description = e.features[0].properties.PC_NAME;
+    const properties = e.features[0].properties;
+
+    const description = `
+        <strong>PWSID:</strong> ${properties.PWSID}<br>
+        <strong>Zipcode:</strong> ${properties.ZIPCODE}<br>
+        <strong>Town:</strong> ${properties.CITY_TOWN}<br>
+        <strong>State:</strong> ${properties.State} <br>
+        <strong>PWS (Public Water System):</strong> ${properties.PWSName}<br>
+        <strong>Facility Name:</strong> ${properties.FacilityName}<br>
+        <strong>Water Type Tested:</strong> ${properties.FacilityWaterType}<br>
+        <strong>Collection Date:</strong> ${properties.CollectionDate}<br>
+        <strong>Contaminant:</strong> PFOA <br>
+        <strong>Analytical Result Value:</strong> ${properties.AnalyticalResultValue} ug/L
+    `;
 
     // Ensure that if the map is zoomed out such that multiple
     // copies of the feature are visible, the popup appears
